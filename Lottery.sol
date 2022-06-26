@@ -9,7 +9,7 @@ contract Lottery {
     }
 
     function enter() public payable {
-        require(msg.value > .01 ether); // 이더 값이 0.1 이상? >= 인지 >
+        require(msg.value > .01 ether);
         players.push(msg.sender);
     }
 
@@ -24,7 +24,7 @@ contract Lottery {
 
         winner.transfer(address(this).balance);
         
-        players = new address payable[](0); // show_players 어디서 온 변수? 
+        players = new address payable[](0);
 
         return winner;
     }
@@ -38,3 +38,9 @@ contract Lottery {
         _;
     }
 }
+
+// 궁금한점
+// enter 메서드 중 0.1 ether로 입력시 에러.. 
+// random 메서드 중 encodePacked : 비포장 형식이 뭔지
+// show_players는 어디에 사용되는건지.. 일단 참여자들을 보여주는 것 같아 고침
+// 배열에 payable modifier 붙일 경우 꼭 [] 앞에 선언하기
