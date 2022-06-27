@@ -1,15 +1,22 @@
 pragma solidity ^0.5.8;
 
 contract Lottery {
-    address public manager;
-    address payable[] public players;
+    address public manager; // 관리자 
+    address payable[] private players; // 솔리디티 공식문서 규칙 보기
 
-    constructor() public {
+    constructor() public { // constructor : 배포시 자동으로 한번 실행되는 함수
         manager = msg.sender;
     }
 
+    // 왜 단위를 ether, wei를 쓰는가?
+    // ERC-20 특징
+    // 대체 가능 / 소수점 단위로 계속 쪼갤 수 있다.
+    // EVM은 연산시 소수점으로 연산시 메모리가 많이들게 됨
+    // 그래서 데시멀을 통해서 소수점 단위를 정수로 변환하여 계산
+    // 사용자에게 수수료를 절감해주기 위한 방법  
+
     function enter() public payable {
-        require(msg.value > .01 ether);
+        require(msg.value >= .1 ether); 
         players.push(msg.sender);
     }
 
@@ -33,14 +40,12 @@ contract Lottery {
         return players;
     }
 
+    function getBalance() public view returns(uint) {
+        return address(this).balance;
+    }
+
     modifier restricted {
         require(msg.sender == manager);
         _;
     }
 }
-
-// 궁금한점
-// enter 메서드 중 0.1 ether로 입력시 에러.. 
-// random 메서드 중 encodePacked : 비포장 형식이 뭔지
-// show_players는 어디에 사용되는건지.. 일단 참여자들을 보여주는 것 같아 고침
-// 배열에 payable modifier 붙일 경우 꼭 [] 앞에 선언하기
